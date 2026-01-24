@@ -1,6 +1,6 @@
 import mongoose, {Document, Schema} from 'mongoose';
 
-interface Iuser extends Document{
+export interface Iuser extends Document{
     name: string,
     email: string,
     password: string,
@@ -24,12 +24,12 @@ const schema: Schema<Iuser> =new Schema({
     },
     role: {
         type: String,
-        required: true,
+        default: "user",
     },
     playlist:[
         {
             type: String,
-            required:true, 
+            // required:false, 
         }
     ],
 },

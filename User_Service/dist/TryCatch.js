@@ -1,5 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
-const TryCatch = (handler) => {
+export const TryCatch = (handler) => {
     return async (req, res, next) => {
         try {
             await handler(req, res, next);
