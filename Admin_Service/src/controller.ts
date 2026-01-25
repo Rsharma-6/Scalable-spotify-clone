@@ -16,7 +16,7 @@ export const addAlbum= TryCatch(async (req: AuthenticatedRequest, res)=>{
             message: "You are not admin",
         });
         return;
-     }
+    }
 
      const {title, description}=req.body
      const file=req.file;
@@ -34,7 +34,7 @@ export const addAlbum= TryCatch(async (req: AuthenticatedRequest, res)=>{
         });
         return;
      }
-
+ 
      const cloud=await cloudinary.v2.uploader.upload(fileBuffer.content, { folder: "Albums"});
 
      const result=await sql`
@@ -48,7 +48,7 @@ export const addAlbum= TryCatch(async (req: AuthenticatedRequest, res)=>{
 
 export const addSong= TryCatch(async(req: AuthenticatedRequest, res)=>{
     if(req.user?.role !=="admin"){
-        res.status(401).json({
+        res.status(403).json({
             message: "You are not admin"
         });
         return;
@@ -95,7 +95,7 @@ export const addSong= TryCatch(async(req: AuthenticatedRequest, res)=>{
 
 export const addThumbnail= TryCatch(async (req:AuthenticatedRequest, res)=>{
     if(req.user?.role !=="admin"){
-        res.status(401).json({
+        res.status(403).json({
             message: "You are not admin"
         });
         return;
@@ -132,3 +132,46 @@ export const addThumbnail= TryCatch(async (req:AuthenticatedRequest, res)=>{
         song : result[0],
      });
 })
+
+export const deleteAlbum=TryCatch(async(req: AuthenticatedRequest, res)=>{
+    if(req.user?.role !=="admin"){
+        res.status(403).json({
+            message : "You are not Admin",
+        });
+        return;
+    }
+
+    const {id}= req.params;
+
+    const album = await sql`SELECT id FROM albums WHERE id = ${id}`;
+      if (album.length === 0) {
+             return res.status(404).json({ message: "Album not found" });
+  }
+
+    await sql `DELETE FROM songs WHERE album_id=${id}`;
+    await sql `DELETE FROM albums WHERE id=${id}`;
+
+    res.json({
+        message : "Album deleted Sucessfully",
+    });
+})
+
+export const deleteSong=TryCatch(async(req: AuthenticatedRequest, res)=>{
+    if(req.user?.role !=="admin"){
+        res.status(401).json({
+            message: "Your are not Admin",
+        });
+        return;
+    }
+    const {id}=req.params;
+
+  const result = await sql`DELETE FROM songs WHERE id=${id}`;
+
+   if (result.length=== 0) {
+    return res.status(404).json({ message: "Song not found" });
+    }
+    res.json({
+        message: "Song Deleted"
+    });
+
+});
