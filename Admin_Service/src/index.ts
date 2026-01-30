@@ -3,10 +3,14 @@ import dotenv from "dotenv";
 import { sql } from "./config/db.js";
 import adminRoutes from "./route.js"
 import cloudinary from "cloudinary";
+import { RedisConnect } from "./config/redis.js";
+import cors from "cors";
 dotenv.config();
 
 const app= express();
 app.use(express.json());
+app.use(cors());
+await RedisConnect();
 
 if (
   !process.env.CLOUD_NAME ||

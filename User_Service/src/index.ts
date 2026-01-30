@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import userRoutes from "./UserRoutes.js"
+import userRoutes from "./UserRoutes.js";
+import cors from "cors";
 dotenv.config();
-
 const connectDb= async()=>{
     try{
         await mongoose.connect(process.env.MONGO_URL as string,{
@@ -17,6 +17,7 @@ const connectDb= async()=>{
 }
 const app=express();
 app.use(express.json());
+app.use(cors());
 const port=process.env.PORT || 5000;
 
 app.get("/",(req, res)=>{

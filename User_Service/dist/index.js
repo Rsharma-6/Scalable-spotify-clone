@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import userRoutes from "./UserRoutes.js";
+import cors from "cors";
 dotenv.config();
 const connectDb = async () => {
     try {
@@ -16,6 +17,7 @@ const connectDb = async () => {
 };
 const app = express();
 app.use(express.json());
+app.use(cors());
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
     res.send("getting intial get request");
